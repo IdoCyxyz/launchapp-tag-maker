@@ -1,0 +1,26 @@
+name: Python workflow
+
+on:
+  push:
+    branches: [main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  python_ci:
+
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [3.9]
+
+    steps:
+    
+    - name: Create Next Snapshot Pull Request
+      uses: peter-evans/create-pull-request@v4
+      if: env.RELEASE_OK == 'yes'
+      with:
+        token: ${{ steps.generate-token.outputs.token }}
+        commit-message: bump snapshot ${{ env.SC_NEXT_VERSION }}-SNAPSHOT
+        title: 'bump snapshot ${{ env.SC_NEXT_VERSION }}-SNAPSHOT'
